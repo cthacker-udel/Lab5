@@ -60,7 +60,7 @@ int hashMap::calcHash1(string k){
 	for(int i = 0; i < k.length(); i++){
 		total = p*total + k.at(i);
 	}
-	return total % this->mapSize;
+	return total % this->mapSize;\
 
 }
 
@@ -108,8 +108,16 @@ void hashMap::reHash() {
 
 }
 int hashMap::coll1(int h, int i, string k) {
+
+
+	// double hashing
+
 }
 int hashMap::coll2(int h, int i, string k) {
+
+
+	// linear probing
+
 }
 int hashMap::findKey(string k) {
 //NOTE: THIS METHOD CANNOT LOOP from index 0 to end of hash array looking for the key.  That destroys any efficiency in run-time. 
