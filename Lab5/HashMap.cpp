@@ -123,8 +123,8 @@ int hashMap::coll1(int h, int i, string k) {
 }
 int hashMap::coll2(int h, int i, string k) { // TODO : COLL2
 	// linear probing
-	// is i the array size?
-	return k % i;
+	// h and i aren't used in this collision.
+	return k % this->mapSize;
 
 }
 int hashMap::findKey(string k) { // TODO : FINDKEY
