@@ -25,14 +25,16 @@ int hashMap::getIndex(string k) {
 	reHash();
 	int index1 = calcHash1(k);
 	if(*(*(this->map+index1)) != NULL){
-		// collision
+		// collision <--- call coll1, see if that returns a value that works, if it doesnt, then call coll2
+		/*
 		int index2 = calcHash2(k);
-		if(*(*(this->map+index2)) != NULL){
+		if(*(*(this->map+index2)) != NULL){ <-- replace this with return of coll1 != NULL
 			// collision2
 		}
 		else{
 			// place node at index
 		}
+		*/
 	}
 	else{
 		// place node at index
@@ -109,7 +111,7 @@ void hashMap::reHash() {
 }
 int hashMap::coll1(int h, int i, string k) {
 
-
+	return h + i *calcHash2(k);
 	// double hashing
 
 }
