@@ -30,8 +30,24 @@ int hashMap::getIndex(string k) { // TODO : GETINDEX
 
 	// it might happen(the if statements) because if the process of how we got to place the key
 	// is through collision functions then we have to repeat the process to find it
-	int index1 = calcHash1(k);
+	int index1;
+	if(this->hashfn){
+		index1 = calcHash1(k);
+	}
+	else{
+		index1 = calcHash2(k);
+	}
+
 	if(*(this->map+index1) != NULL){
+		this->collisions++;
+		if(this->collfn){
+			index1 = coll1(index1,index1,k);
+			return index1;
+		}
+		else{
+			index1 = coll2(index1,index1,k);
+			return index1;
+		}
 		// collision <--- call coll1, see if that returns a value that works, if it doesnt, then call coll2
 		/*
 		int index2 = calcHash2(k);
@@ -45,6 +61,7 @@ int hashMap::getIndex(string k) { // TODO : GETINDEX
 	}
 	else{
 		// place node at index
+		return index1;
 	}
 	return -1;
 }
@@ -70,7 +87,7 @@ int hashMap::calcHash1(string k){ // complete
 	for(int i = 0; i < ((int)k.length()); i++){
 		total = p*total + k.at(i);
 	}
-	return total % this->mapSize;\
+	return total % this->mapSize;
 
 }
 
@@ -184,6 +201,7 @@ int hashMap::coll1(int h, int i, string k) {
 	}
 	else{
 		if((this->map+i) != NULL){
+			this->collisions++;
 			return coll1(h,i+1,k);
 		}
 		else{
