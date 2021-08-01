@@ -23,6 +23,8 @@ void hashMap::addKeyValue(string k, string v) {
 }
 int hashMap::getIndex(string k) {
 	reHash();
+	// it might happen(the if statements) because if the process of how we got to place the key
+	// is through collision functions then we have to repeat the process to find it
 	int index1 = calcHash1(k);
 	if(*(*(this->map+index1)) != NULL){
 		// collision <--- call coll1, see if that returns a value that works, if it doesnt, then call coll2
