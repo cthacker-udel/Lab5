@@ -2,6 +2,7 @@
 #include "HashNode.hpp"
 #include <iostream>
 #include <math.h>
+#include <vector>
 using namespace std;
 
 hashMap::hashMap(bool hash1, bool coll1) {
@@ -30,7 +31,7 @@ int hashMap::getIndex(string k) { // TODO : GETINDEX
 	// it might happen(the if statements) because if the process of how we got to place the key
 	// is through collision functions then we have to repeat the process to find it
 	int index1 = calcHash1(k);
-	if(*(*(this->map+index1)) != NULL){
+	if(*(this->map+index1) != NULL){
 		// collision <--- call coll1, see if that returns a value that works, if it doesnt, then call coll2
 		/*
 		int index2 = calcHash2(k);
@@ -45,6 +46,7 @@ int hashMap::getIndex(string k) { // TODO : GETINDEX
 	else{
 		// place node at index
 	}
+	return -1;
 }
 
 int hashMap::calcHash2(string k){ // complete
@@ -65,7 +67,7 @@ int hashMap::calcHash1(string k){ // complete
 
 	int p = 31;
 	int total = 0;
-	for(int i = 0; i < k.length(); i++){
+	for(int i = 0; i < ((int)k.length()); i++){
 		total = p*total + k.at(i);
 	}
 	return total % this->mapSize;\
@@ -93,7 +95,6 @@ bool isPrime(int number){ // helper function
 void hashMap::getClosestPrime() { // complete
 
 	// start at 10
-	bool foundPrime = false;
 	for(int i = this->mapSize*2, j = this->mapSize*2; ; i++,j--){
 		if(isPrime(i)){
 			this->mapSize = i;
@@ -108,29 +109,98 @@ void hashMap::getClosestPrime() { // complete
 }
 void hashMap::reHash() { // complete
 
+	vector<hashNode *> nodes;
+
+	/*
+	 *
+	 * Steps:
+	 *
+	 * 1) Remove all nodes <--- to avoid placing a node in a spot which would be empty but is not because we did not remove all nodes first, so we are removing all nodes first
+	 * 2) Rehash all the nodes, basically place them back in new spots
+	 *
+	 */
+
 	if(this->numKeys / this->mapSize >= .70){
 		// double array size and rehash
 		this->mapSize = this->mapSize*2;
-		// TODO : rehash all keys
+		// TODO : rehash all keys, use addkeyvalue
+		for(int i = 0; i <= this->mapSize/2; i++){
+			if(*(this->map+i) != NULL){
+				// value there
+				hashNode *theNode = *(this->map+i);
+				nodes.push_back(theNode);
+				delete *(this->map+i); // delete node
+			}
+		}
+
+		// adding in all the nodes
+
+		for(int i = 0; i < ((int)nodes.size()); i++){
+
+			hashNode *theNode = nodes.at(i);
+			int index1;
+			if(this->hashfn){
+				// hash1
+				index1 = calcHash1(theNode->keyword);
+			}
+			else{
+				index1 = calcHash2(theNode->keyword);
+			}
+
+			if(*(this->map+1) != NULL){ // collision
+				this->collisions++;
+				if(this->collfn){ // use coll1
+					*(this->map+coll1(index1,index1,theNode->keyword)) = theNode;
+				}
+				else{
+					// use coll2
+					*(this->map+coll2(index1,index1,theNode->keyword)) = theNode;
+				}
+			}
+			else{
+				*(this->map+index1) = theNode;
+			}
+
+		}
+
 	}
 
 }
 int hashMap::coll1(int h, int i, string k) {
-
+	// TODO : TEST DOUBLE HASHING
+	// might require same methodoly of coll2, in the sense that we keep calling it until it finds a valid index
 	return h + i *calcHash2(k);
 	// double hashing
 
 }
-int hashMap::coll2(int h, int i, string k) { // TODO : COLL2
+int hashMap::coll2(int h, int i, string k) { // TODO : COLL2 , should be correct
+	// TODO : TEST LINEAR PROBING
 	// linear probing
 	// h and i aren't used in this collision.
-	return k % this->mapSize;
+	if(i == this->mapSize-1){ // reach the end of the map
+		if(*(this->map+this->mapSize) != NULL){ // checks the last node of the map
+			// last node of the map is taken
+			this->collisions++;
+			return coll2(h,0,k);
+		}
+		else{
+			return i;
+		}
+	}
+	else if(*(this->map+i) != NULL){ // index is already taken
+		this->collisions++;
+		return coll2(h,i+1,k); // re-call the function with index+1
+	}
+	else{
+		return i;
+	}
+	//return k % this->mapSize;
 
 }
 int hashMap::findKey(string k) { // TODO : FINDKEY
 	// given a key and find it in the map
 //NOTE: THIS METHOD CANNOT LOOP from index 0 to end of hash array looking for the key.  That destroys any efficiency in run-time. 
-
+	return -1;
 
 }
 
