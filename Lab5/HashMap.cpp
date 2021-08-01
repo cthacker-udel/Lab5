@@ -168,7 +168,29 @@ void hashMap::reHash() { // complete
 }
 int hashMap::coll1(int h, int i, string k) {
 	// TODO : TEST DOUBLE HASHING
-	// might require same methodoly of coll2, in the sense that we keep calling it until it finds a valid index
+	// might require same methodology of coll2, in the sense that we keep calling it until it finds a valid index
+
+	int j = h + i *calcHash2(k);
+	i = j;
+	if(i == this->mapSize-1){
+
+		if(*(this->map+this->mapSize-1) != NULL){
+			this->collisions++;
+			return coll1(h,0,k);
+		}
+		else{
+			return i;
+		}
+	}
+	else{
+		if((this->map+i) != NULL){
+			return coll1(h,i+1,k);
+		}
+		else{
+			return i;
+		}
+	}
+
 	return h + i *calcHash2(k);
 	// double hashing
 
@@ -178,7 +200,7 @@ int hashMap::coll2(int h, int i, string k) { // TODO : COLL2 , should be correct
 	// linear probing
 	// h and i aren't used in this collision.
 	if(i == this->mapSize-1){ // reach the end of the map
-		if(*(this->map+this->mapSize) != NULL){ // checks the last node of the map
+		if(*(this->map+this->mapSize-1) != NULL){ // checks the last node of the map
 			// last node of the map is taken
 			this->collisions++;
 			return coll2(h,0,k);
