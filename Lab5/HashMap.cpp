@@ -124,6 +124,14 @@ void hashMap::getClosestPrime() { // complete
 	}
 
 }
+
+/*
+ *
+ * May have to remove recursion from calchash, and add that recursive aspect to the functions that call them
+ *
+ *
+ */
+
 void hashMap::reHash() { // complete
 
 	vector<hashNode *> nodes;
@@ -167,7 +175,20 @@ void hashMap::reHash() { // complete
 			if(*(this->map+1) != NULL){ // collision
 				this->collisions++;
 				if(this->collfn){ // use coll1
-					*(this->map+coll1(index1,index1,theNode->keyword)) = theNode;
+					int tmpResult = index1;
+					tmpResult = coll1(index1,tmpResult,theNode->keyword);
+					// 0,1 -> 0,2 -> 0,3 -> 0,4 -> 0,0
+					// control, orig index, cycle up, and result
+					// 3 variables, orig index, cycling index, and result
+					int tmpIndex = index1;
+					while(*(this->map+tmpResult) != NULL){
+						tmpResult = ++tmpIndex;
+						if(tmpIndex == this->mapSize){
+							tmpIndex = 0;
+							tmpResult = tmpIndex;
+						}
+						tmpResult = coll1(index1,tmpResult,theNode->keyword);
+					}
 				}
 				else{
 					// use coll2
@@ -187,7 +208,8 @@ int hashMap::coll1(int h, int i, string k) {
 	// TODO : TEST DOUBLE HASHING
 	// might require same methodology of coll2, in the sense that we keep calling it until it finds a valid index
 
-	int j = h + i *calcHash2(k);
+	//int j = h + i *calcHash2(k);
+	/*
 	i = j;
 	if(i == this->mapSize-1){
 
@@ -208,6 +230,7 @@ int hashMap::coll1(int h, int i, string k) {
 			return i;
 		}
 	}
+	*/
 
 	return h + i *calcHash2(k);
 	// double hashing
