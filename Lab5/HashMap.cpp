@@ -16,12 +16,12 @@ hashMap::hashMap(bool hash1, bool coll1) {
 	this->hashcoll = 0;
 
 }
-void hashMap::addKeyValue(string k, string v) {
+void hashMap::addKeyValue(string k, string v) { // TODO : ADDKEYVALUE
 
 	// collisions will happen here not in getIndex
 
 }
-int hashMap::getIndex(string k) {
+int hashMap::getIndex(string k) { // TODO : GETINDEX
 	reHash();
 	// uses calchash and returns the index of the keyword k, use calchash, and then see if the key where the
 	//index thats returned is is the same as the key given, if not, then we have a collision, use coll1,
@@ -47,7 +47,7 @@ int hashMap::getIndex(string k) {
 	}
 }
 
-int hashMap::calcHash2(string k){
+int hashMap::calcHash2(string k){ // complete
 
 	int p = 83;
 	int total = 0;
@@ -59,7 +59,7 @@ int hashMap::calcHash2(string k){
 
 }
 
-int hashMap::calcHash1(string k){
+int hashMap::calcHash1(string k){ // complete
 
 	// Horner's rule
 
@@ -74,7 +74,7 @@ int hashMap::calcHash1(string k){
 
 
 
-bool isPrime(int number){
+bool isPrime(int number){ // helper function
 
 	if(number % 2 == 0 || number % 3 == 0 || number % 5 == 0){
 		return false;
@@ -90,7 +90,7 @@ bool isPrime(int number){
 
 }
 
-void hashMap::getClosestPrime() {
+void hashMap::getClosestPrime() { // complete
 
 	// start at 10
 	bool foundPrime = false;
@@ -106,12 +106,12 @@ void hashMap::getClosestPrime() {
 	}
 
 }
-void hashMap::reHash() {
+void hashMap::reHash() { // complete
 
 	if(this->numKeys / this->mapSize >= .70){
 		// double array size and rehash
 		this->mapSize = this->mapSize*2;
-		// rehash all keys
+		// TODO : rehash all keys
 	}
 
 }
@@ -121,13 +121,13 @@ int hashMap::coll1(int h, int i, string k) {
 	// double hashing
 
 }
-int hashMap::coll2(int h, int i, string k) {
+int hashMap::coll2(int h, int i, string k) { // TODO : COLL2
 
 
 	// linear probing
 
 }
-int hashMap::findKey(string k) {
+int hashMap::findKey(string k) { // TODO : FINDKEY
 	// given a key and find it in the map
 //NOTE: THIS METHOD CANNOT LOOP from index 0 to end of hash array looking for the key.  That destroys any efficiency in run-time. 
 
