@@ -18,7 +18,7 @@ hashMap::hashMap(bool hash1, bool coll1) {
 }
 void hashMap::addKeyValue(string k, string v) {
 
-
+	// collisions will happen here not in getIndex
 
 }
 int hashMap::getIndex(string k) {
