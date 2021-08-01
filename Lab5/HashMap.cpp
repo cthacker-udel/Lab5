@@ -23,6 +23,10 @@ void hashMap::addKeyValue(string k, string v) {
 }
 int hashMap::getIndex(string k) {
 	reHash();
+	// uses calchash and returns the index of the keyword k, use calchash, and then see if the key where the
+	//index thats returned is is the same as the key given, if not, then we have a collision, use coll1,
+	//find the key there, see if its the same
+
 	// it might happen(the if statements) because if the process of how we got to place the key
 	// is through collision functions then we have to repeat the process to find it
 	int index1 = calcHash1(k);
@@ -124,8 +128,13 @@ int hashMap::coll2(int h, int i, string k) {
 
 }
 int hashMap::findKey(string k) {
+	// given a key and find it in the map
 //NOTE: THIS METHOD CANNOT LOOP from index 0 to end of hash array looking for the key.  That destroys any efficiency in run-time. 
+
+
 }
+
+
 
 
 void hashMap::printMap() {
