@@ -41,6 +41,8 @@ int hashMap::getIndex(string k) { // TODO : GETINDEX
 	if(*(this->map+index1) != NULL){
 		this->collisions++;
 		if(this->collfn){
+			int tmpResult;
+
 			index1 = coll1(index1,index1,k);
 			return index1;
 		}
@@ -80,7 +82,7 @@ int hashMap::calcHash2(string k){ // complete
 
 int hashMap::calcHash1(string k){ // complete
 
-	// Horner's rule
+	// Horner's rule, describe why it would work well, sentence or two
 
 	int p = 31;
 	int total = 0;
@@ -112,13 +114,9 @@ bool isPrime(int number){ // helper function
 void hashMap::getClosestPrime() { // complete
 
 	// start at 10
-	for(int i = this->mapSize*2, j = this->mapSize*2; ; i++,j--){
+	for(int i = this->mapSize*2; ; i++){
 		if(isPrime(i)){
 			this->mapSize = i;
-			return;
-		}
-		if(isPrime(j)){
-			this->mapSize = j;
 			return;
 		}
 	}
