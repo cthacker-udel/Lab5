@@ -37,17 +37,19 @@ int hashMap::getIndex(string k) { // TODO : GETINDEX
 	else{
 		index1 = calcHash2(k);
 	}
-	if(*(this->map+index1) != NULL){
+	int index2 = index1;
+	while(*(this->map+index1) != NULL){
 		this->collisions++;
 		if(this->collfn){
-			int tmpResult;
-
-			index1 = coll1(index1,index1,k);
-			return index1;
+			if(index2 == this->mapSize){
+				index2 = 0;
+			}
+			index1 = coll1(index1,index2++,k);
+			//return index1;
 		}
 		else{
 			index1 = coll2(index1,index1,k);
-			return index1;
+			//return index1;
 		}
 		// collision <--- call coll1, see if that returns a value that works, if it doesnt, then call coll2
 		/*
@@ -60,11 +62,7 @@ int hashMap::getIndex(string k) { // TODO : GETINDEX
 		}
 		*/
 	}
-	else{
-		// place node at index
-		return index1;
-	}
-	return -1;
+	return index1;
 }
 
 int hashMap::calcHash2(string k){ // complete
