@@ -26,7 +26,7 @@ void hashMap::addKeyValue(string k, string v) { // TODO : ADDKEYVALUE
 	cout << "Entering addkeyvalue with key" << k << " and value " << v << endl;
 	reHash();
 	int index;
-	this->mapSize++;
+	this->numKeys++;
 	if(this->hashfn){
 		// use hashfunction1
 		index = calcHash1(k);
@@ -192,9 +192,10 @@ void hashMap::reHash() { // complete
 	 * 2) Rehash all the nodes, basically place them back in new spots
 	 *
 	 */
-
-	if(this->numKeys / this->mapSize >= .70){
+	cout << "ratio = " << (this->numKeys*1.0 / this->mapSize) << endl;
+	if(this->numKeys*1.0 / this->mapSize >= .70){
 		// double array size and rehash
+		cout << "entered rehash function" << endl;
 		this->mapSize = this->mapSize*2;
 		// TODO : rehash all keys, use addkeyvalue
 		for(int i = 0; i <= this->mapSize/2; i++){
@@ -297,7 +298,7 @@ int hashMap::coll1(int h, int i, string k) {
 		return i;
 	}
 
-	return h + i *calcHash2(k) % this->mapSize;
+	return (h + i *calcHash2(k)) % this->mapSize;
 	// double hashing
 
 }
