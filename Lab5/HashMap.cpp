@@ -159,7 +159,7 @@ void hashMap::reHash() { // complete
 
 		for(int i = 0; i < ((int)nodes.size()); i++){
 
-			hashNode *theNode = nodes.at(i);
+			hashNode *theNode = nodes.at(i); // get curr node in node list
 			int index1;
 			if(this->hashfn){
 				// hash1
@@ -184,6 +184,7 @@ void hashMap::reHash() { // complete
 							tmpIndex = 0;
 							tmpResult = tmpIndex;
 						}
+						this->collisions++;
 						tmpResult = coll1(index1,tmpResult,theNode->keyword);
 					}
 					*(this->map+tmpResult) = theNode;
@@ -198,6 +199,7 @@ void hashMap::reHash() { // complete
 							tmpResult = tmpIndex;
 						}
 						// coll
+						this->collisions++;
 						tmpResult = coll2(index1,++tmpIndex,theNode->keyword);
 					}
 					*(this->map+tmpResult) = theNode;
