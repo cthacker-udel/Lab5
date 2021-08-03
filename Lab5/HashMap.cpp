@@ -7,10 +7,13 @@ using namespace std;
 
 hashMap::hashMap(bool hash1, bool coll1) {
 
-	this->map = NULL;
 	this->first = "";
 	this->numKeys = 0;
 	this->mapSize = 10;
+	this->map = new hashNode*[this->mapSize];
+	for(int i = 0; i < this->mapSize; i++){
+		*(this->map+i) = new hashNode();
+	}
 	this->hashfn = hash1;
 	this->collfn = coll1;
 	this->collisions = 0;
@@ -20,8 +23,10 @@ hashMap::hashMap(bool hash1, bool coll1) {
 void hashMap::addKeyValue(string k, string v) { // TODO : ADDKEYVALUE
 
 	// collisions will happen here not in getIndex
+	cout << "Entering addkeyvalue with key" << k << " and value " << v << endl;
 	reHash();
 	int index;
+	this->mapSize++;
 	if(this->hashfn){
 		// use hashfunction1
 		index = calcHash1(k);
@@ -30,17 +35,25 @@ void hashMap::addKeyValue(string k, string v) { // TODO : ADDKEYVALUE
 		// use hashfunction2
 		index = calcHash2(k);
 	}
-	if(*(this->map+index) == NULL){
+	hashNode *theNode = *(this->map+index);
+	if(theNode->keyword == ""){
 		// place node here
 		*(this->map+index) = new hashNode(k,v);
 	}
 	else{
 		// collision
-		while(*(*(this->map+index))->keyword != k){
-			if(*(*(this->map+index))->keyword == k){
+		theNode = *(this->map+index);
+		while(theNode->keyword != k){
+			theNode = *(this->map+index);
+			if(theNode->keyword == k){
 				// found node
-				hashNode *theNode = *(*(this->map+index));
+				theNode = *(this->map+index);
 				theNode->addValue(v);
+				break;
+			}
+			else if(theNode->keyword == ""){
+				*(this->map+index) = new hashNode(k,v);
+				break;
 			}
 			else{
 				// did not find node
@@ -76,7 +89,8 @@ int hashMap::getIndex(string k) { // TODO : GETINDEX
 	}
 	if(*(this->map+index1) != NULL){
 		this->collisions++;
-		if(*(*(this->map+index1)+0)->keyword == k){
+		hashNode *theNode = *(this->map+index1);
+		if(theNode->keyword == k){
 			return index1;
 		}
 		else if(this->collfn){
@@ -120,10 +134,10 @@ int hashMap::calcHash1(string k){ // complete
 
 	// Horner's rule, describe why it would work well, sentence or two
 
-	int p = 31;
+	int p = 7;
 	int total = 0;
 	for(int i = 0; i < ((int)k.length()); i++){
-		total = p*total + k.at(i);
+		total = p+total + k.at(i);
 	}
 	return total % this->mapSize;
 
@@ -278,11 +292,12 @@ int hashMap::coll1(int h, int i, string k) {
 		}
 	}
 	*/
-	if(*(*(this->map+i))->keyword == k){
+	hashNode *theNode = *(this->map+i);
+	if(theNode != NULL && theNode->keyword == k){
 		return i;
 	}
 
-	return h + i *calcHash2(k);
+	return h + i *calcHash2(k) % this->mapSize;
 	// double hashing
 
 }
@@ -290,8 +305,9 @@ int hashMap::coll2(int h, int i, string k) { // TODO : COLL2 , should be correct
 	// TODO : TEST LINEAR PROBING
 	// linear probing
 	// h and i aren't used in this collision.
-	if(*(*(this->map+i))->keyword == k){
-		return k;
+	hashNode *theNode = *(this->map+i);
+	if(theNode->keyword == k){
+		return i;
 	}
 	if(i == this->mapSize-1){ // reach the end of the map
 		if(*(this->map+this->mapSize-1) != NULL){ // checks the last node of the map
