@@ -20,6 +20,43 @@ hashMap::hashMap(bool hash1, bool coll1) {
 void hashMap::addKeyValue(string k, string v) { // TODO : ADDKEYVALUE
 
 	// collisions will happen here not in getIndex
+	reHash();
+	int index;
+	if(this->hashfn){
+		// use hashfunction1
+		index = calcHash1(k);
+	}
+	else{
+		// use hashfunction2
+		index = calcHash2(k);
+	}
+	if(*(this->map+index) == NULL){
+		// place node here
+		*(this->map+index) = new hashNode(k,v);
+	}
+	else{
+		// collision
+		while(*(*(this->map+index))->keyword != k){
+			if(*(*(this->map+index))->keyword == k){
+				// found node
+				hashNode *theNode = *(*(this->map+index));
+				theNode->addValue(v);
+			}
+			else{
+				// did not find node
+				if(this->collfn){
+					// coll1
+					index = coll1(index,index,k);
+				}
+				else{
+					// coll2
+					index = coll2(index,index,k);
+				}
+			}
+		}
+	}
+
+
 
 }
 int hashMap::getIndex(string k) { // TODO : GETINDEX
@@ -250,6 +287,9 @@ int hashMap::coll2(int h, int i, string k) { // TODO : COLL2 , should be correct
 	// TODO : TEST LINEAR PROBING
 	// linear probing
 	// h and i aren't used in this collision.
+	if(*(*(this->map+i))->keyword == k){
+		return k;
+	}
 	if(i == this->mapSize-1){ // reach the end of the map
 		if(*(this->map+this->mapSize-1) != NULL){ // checks the last node of the map
 			// last node of the map is taken
