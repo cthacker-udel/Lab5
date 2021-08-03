@@ -37,7 +37,6 @@ int hashMap::getIndex(string k) { // TODO : GETINDEX
 	else{
 		index1 = calcHash2(k);
 	}
-
 	if(*(this->map+index1) != NULL){
 		this->collisions++;
 		if(this->collfn){
