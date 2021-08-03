@@ -30,11 +30,12 @@ hashNode::hashNode(string s, string v){
 void hashNode::addValue(string v) {
 	// adding a value to the end of the value array associated
 	// with a key
-	for(int i = 0; i < this->valuesSize; i++){
+	for(int i = 0; i < this->currSize; i++){
 		if(*(this->values+i) == NULL){
 			*(this->values+i) = v;
 		}
 	}
+	this->currSize++;
 	*(this->values+this->valuesSize-1) = v;
 }
 void hashNode::dblArray() {

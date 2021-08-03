@@ -40,7 +40,10 @@ int hashMap::getIndex(string k) { // TODO : GETINDEX
 	int index2 = index1;
 	while(*(this->map+index1) != NULL){
 		this->collisions++;
-		if(this->collfn){
+		if(*(*(this->map+index1)+0)->keyword == k){
+			break;
+		}
+		else if(this->collfn){
 			if(index2 == this->mapSize){
 				index2 = 0;
 			}
