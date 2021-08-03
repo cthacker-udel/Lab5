@@ -46,6 +46,11 @@ void hashNode::dblArray() {
 }
 
 string hashNode::getRandValue() {
+
+	int randValue = rand() % this->valuesSize;
+
+	return *(this->values+randValue);
+
 	//Every key has a values array - an array of words that 
 	// follow that key in the text document.  You're going to 
 	//randomly select one of those words and return it.  That 
