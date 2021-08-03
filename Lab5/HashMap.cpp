@@ -37,22 +37,18 @@ int hashMap::getIndex(string k) { // TODO : GETINDEX
 	else{
 		index1 = calcHash2(k);
 	}
-	int index2 = index1;
-	while(*(this->map+index1) != NULL){
+	if(*(this->map+index1) != NULL){
 		this->collisions++;
 		if(*(*(this->map+index1)+0)->keyword == k){
-			break;
+			return index1;
 		}
 		else if(this->collfn){
-			if(index2 == this->mapSize){
-				index2 = 0;
-			}
-			index1 = coll1(index1,index2++,k);
-			//return index1;
+			index1 = coll1(index1,index1,k);
+			return index1;
 		}
 		else{
 			index1 = coll2(index1,index1,k);
-			//return index1;
+			return index1;
 		}
 		// collision <--- call coll1, see if that returns a value that works, if it doesnt, then call coll2
 		/*
@@ -65,7 +61,10 @@ int hashMap::getIndex(string k) { // TODO : GETINDEX
 		}
 		*/
 	}
-	return index1;
+	else{
+		return index1;
+	}
+	return -1;
 }
 
 int hashMap::calcHash2(string k){ // complete
@@ -272,6 +271,9 @@ int hashMap::coll2(int h, int i, string k) { // TODO : COLL2 , should be correct
 
 }
 int hashMap::findKey(string k) { // TODO : FINDKEY
+
+	int theIndex = getIndex(k);
+	return theIndex;
 	// call getindex
 	// given a key and find it in the map
 //NOTE: THIS METHOD CANNOT LOOP from index 0 to end of hash array looking for the key.  That destroys any efficiency in run-time. 
