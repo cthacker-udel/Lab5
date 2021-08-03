@@ -187,10 +187,21 @@ void hashMap::reHash() { // complete
 						}
 						tmpResult = coll1(index1,tmpResult,theNode->keyword);
 					}
+					*(this->map+tmpResult) = theNode;
 				}
 				else{
 					// use coll2
-					*(this->map+coll2(index1,index1,theNode->keyword)) = theNode;
+					int tmpResult = coll2(index1,index1,theNode->keyword);
+					int tmpIndex = index1;
+					while(*(this->map+tmpResult) != NULL){
+						if(tmpIndex == this->mapSize){
+							tmpIndex = 0;
+							tmpResult = tmpIndex;
+						}
+						// coll
+						tmpResult = coll2(index1,++tmpIndex,theNode->keyword);
+					}
+					*(this->map+tmpResult) = theNode;
 				}
 			}
 			else{
@@ -259,6 +270,7 @@ int hashMap::coll2(int h, int i, string k) { // TODO : COLL2 , should be correct
 
 }
 int hashMap::findKey(string k) { // TODO : FINDKEY
+	// call getindex
 	// given a key and find it in the map
 //NOTE: THIS METHOD CANNOT LOOP from index 0 to end of hash array looking for the key.  That destroys any efficiency in run-time. 
 	return -1;
