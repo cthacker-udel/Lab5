@@ -278,6 +278,9 @@ int hashMap::coll1(int h, int i, string k) {
 		}
 	}
 	*/
+	if(*(*(this->map+i))->keyword == k){
+		return i;
+	}
 
 	return h + i *calcHash2(k);
 	// double hashing
