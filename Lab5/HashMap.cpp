@@ -170,7 +170,7 @@ void hashMap::reHash() { // complete
 				index1 = calcHash2(theNode->keyword);
 			}
 
-			if(*(this->map+1) != NULL){ // collision
+			if(*(this->map+index1) != NULL){ // collision
 				this->collisions++;
 				if(this->collfn){ // use coll1
 					int tmpResult = index1;
