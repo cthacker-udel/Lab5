@@ -1,0 +1,2 @@
+Collisions using hash 1: 0, and collision handling 1: 0
+

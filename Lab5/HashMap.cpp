@@ -12,7 +12,7 @@ hashMap::hashMap(bool hash1, bool coll1) {
 	this->mapSize = 10;
 	this->map = new hashNode*[this->mapSize];
 	for(int i = 0; i < this->mapSize; i++){
-		*(this->map+i) = new hashNode();
+		*(this->map+i) = NULL;
 	}
 	this->hashfn = hash1;
 	this->collfn = coll1;
@@ -35,17 +35,26 @@ void hashMap::addKeyValue(string k, string v) { // TODO : ADDKEYVALUE
 		// use hashfunction2
 		index = calcHash2(k);
 	}
+	cout << "index generated was : " << index << endl;
 	hashNode *theNode = *(this->map+index);
-	if(theNode->keyword == ""){
+	if(theNode == NULL){
 		// place node here
 		*(this->map+index) = new hashNode(k,v);
 	}
 	else{
 		// collision
+		if(index == 342 && v == "North!"){
+			cout << "breakhere" << endl;
+		}
+		cout << "Collision occured" << endl;
 		theNode = *(this->map+index);
-		while(theNode->keyword != k){
+		while(theNode != NULL){
+			this->collisions++;
 			theNode = *(this->map+index);
-			if(theNode->keyword == k){
+			if(theNode == NULL){
+				*(this->map+index) = new hashNode(k,v);
+			}
+			else if(theNode->keyword == k){
 				// found node
 				theNode = *(this->map+index);
 				theNode->addValue(v);
@@ -59,14 +68,15 @@ void hashMap::addKeyValue(string k, string v) { // TODO : ADDKEYVALUE
 				// did not find node
 				if(this->collfn){
 					// coll1
-					index = coll1(index,index,k);
+					index = coll1(index,this->collisions,k);
 				}
 				else{
 					// coll2
-					index = coll2(index,index,k);
+					index = coll2(index,this->collisions,k);
 				}
 			}
 		}
+		this->collisions = 0;
 	}
 
 
@@ -120,11 +130,14 @@ int hashMap::getIndex(string k) { // TODO : GETINDEX
 
 int hashMap::calcHash2(string k){ // complete
 
-	int p = 83;
+	int p = 80;
 	int total = 0;
 	while(k.length() != 0){
 		total += ((int)sqrt((((int)k.at(k.length()-1))*p)));
 		k = k.substr(0,k.length()-1);
+	}
+	while(total > this->mapSize){
+		total -= this->mapSize;
 	}
 	return total % this->mapSize;
 
@@ -192,20 +205,41 @@ void hashMap::reHash() { // complete
 	 * 2) Rehash all the nodes, basically place them back in new spots
 	 *
 	 */
+	if((this->numKeys*1.0 / this->mapSize) == 0.663269){
+		cout << "end" << endl;
+	}
 	cout << "ratio = " << (this->numKeys*1.0 / this->mapSize) << endl;
 	if(this->numKeys*1.0 / this->mapSize >= .70){
+
+		cout << "size of map is " << this->numKeys << endl;
 		// double array size and rehash
 		cout << "entered rehash function" << endl;
-		this->mapSize = this->mapSize*2;
+
+		int tmpMapSize = this->mapSize;
+
+		getClosestPrime(); // <---- double map size
 		// TODO : rehash all keys, use addkeyvalue
-		for(int i = 0; i <= this->mapSize/2; i++){
-			if(*(this->map+i) != NULL){
-				// value there
-				hashNode *theNode = *(this->map+i);
-				nodes.push_back(theNode);
-				delete *(this->map+i); // delete node
+
+		cout << "before for loop" << endl;
+
+		for(int i = 0; i < tmpMapSize; i++){
+			hashNode *theNode = *(this->map+i);
+			if(theNode != NULL){
+				if(theNode->keyword != ""){
+					// value there
+					nodes.push_back(theNode);
+				}
 			}
 		}
+
+		// double map size
+
+		this->map = new hashNode*[this->mapSize];
+		for(int i = 0; i < this->mapSize; i++){
+			*(this->map+i) = NULL;
+		}
+
+		cout << "after for loop" << endl;
 
 		// adding in all the nodes
 
@@ -262,6 +296,8 @@ void hashMap::reHash() { // complete
 			}
 
 		}
+		cout << "\n\n---- AFTER REHASHING ----\n\n" << endl;
+		//printMap();
 
 	}
 

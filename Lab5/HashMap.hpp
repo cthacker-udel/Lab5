@@ -6,6 +6,7 @@
 
 class hashMap {
 	friend class MakeSeuss;
+public: // added
 	hashNode **map;  //Note that this is a dynamically 
 			//allocated array of pointers to hash Nodes.  It 
 			//is not a matrix.  I made it a pointer to an 
@@ -28,7 +29,7 @@ class hashMap {
 	int hashcoll; //number of initial collisions using just 
 			//the hash function
 
-public:
+//public: // removed
 	hashMap(bool hash1, bool coll1);  // when creating the 
 			//map, make sure you initialize the values to 
 			//NULL so you know whether that index has a key 

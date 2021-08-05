@@ -2,7 +2,7 @@
 #define MAKESEUSS_HPP_
 
 
-#include "hashMap.hpp"
+#include "HashMap.hpp"
 #include <iostream>
 using namespace std;
 

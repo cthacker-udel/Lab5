@@ -43,7 +43,7 @@ void hashNode::dblArray() {
 		*(newArr+i) = *(this->values+i);
 	}
 
-	delete this->values;
+	delete []this->values;
 	this->valuesSize = this->valuesSize*2;
 	this->values = newArr;
 	// when the value array gets full, you need to make a new 
