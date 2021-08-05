@@ -32,13 +32,20 @@ void hashNode::addValue(string v) {
 	// with a key
 	*(this->values+this->currSize) = v;
 	this->currSize++;
+	if(this->valuesSize == currSize){
+		this->dblArray();
+	}
 }
 void hashNode::dblArray() {
 	string *newArr = new string[this->valuesSize*2];
+
 	for(int i = 0; i < this->valuesSize; i++){
 		*(newArr+i) = *(this->values+i);
 	}
+
+	delete this->values;
 	this->valuesSize = this->valuesSize*2;
+	this->values = newArr;
 	// when the value array gets full, you need to make a new 
 	// array twice the size of the old one (just double, no 
 	//going to next prime) and then copy over the old values 
@@ -49,7 +56,7 @@ void hashNode::dblArray() {
 
 string hashNode::getRandValue() {
 
-	int randValue = rand() % this->valuesSize;
+	int randValue = rand() % this->currSize;
 
 	return *(this->values+randValue);
 
