@@ -76,6 +76,7 @@ void hashMap::addKeyValue(string k, string v) { // TODO : ADDKEYVALUE
 				}
 			}
 		}
+		reHash(); // check if the size is at the threshold
 		this->collisions = 0;
 	}
 
@@ -83,7 +84,7 @@ void hashMap::addKeyValue(string k, string v) { // TODO : ADDKEYVALUE
 
 }
 int hashMap::getIndex(string k) { // TODO : GETINDEX
-	reHash();
+	//reHash();
 	// uses calchash and returns the index of the keyword k, use calchash, and then see if the key where the
 	//index thats returned is is the same as the key given, if not, then we have a collision, use coll1,
 	//find the key there, see if its the same
@@ -205,9 +206,6 @@ void hashMap::reHash() { // complete
 	 * 2) Rehash all the nodes, basically place them back in new spots
 	 *
 	 */
-	if((this->numKeys*1.0 / this->mapSize) == 0.663269){
-		cout << "end" << endl;
-	}
 	cout << "ratio = " << (this->numKeys*1.0 / this->mapSize) << endl;
 	if(this->numKeys*1.0 / this->mapSize >= .70){
 
@@ -246,7 +244,11 @@ void hashMap::reHash() { // complete
 		for(int i = 0; i < ((int)nodes.size()); i++){
 
 			hashNode *theNode = nodes.at(i); // get curr node in node list
-			int index1;
+
+			// call getindex with theNode's keyword instead of same logic below
+
+
+			/*int index1;
 			if(this->hashfn){
 				// hash1
 				index1 = calcHash1(theNode->keyword);
@@ -293,7 +295,7 @@ void hashMap::reHash() { // complete
 			}
 			else{
 				*(this->map+index1) = theNode;
-			}
+			}*/
 
 		}
 		cout << "\n\n---- AFTER REHASHING ----\n\n" << endl;
@@ -369,11 +371,23 @@ int hashMap::coll2(int h, int i, string k) { // TODO : COLL2 , should be correct
 int hashMap::findKey(string k) { // TODO : FINDKEY
 
 	int theIndex = getIndex(k);
+
+	/*
+	 *
+	 * This is most likely where the problem lies
+	 *
+	 * 2 checks:
+	 *
+	 * 1) check if the index is empty <--- showing me where to place it
+	 * 2) check if the index has values <--- is it the right value
+	 *
+	 */
+
 	return theIndex;
 	// call getindex
 	// given a key and find it in the map
 //NOTE: THIS METHOD CANNOT LOOP from index 0 to end of hash array looking for the key.  That destroys any efficiency in run-time. 
-	return -1;
+	//return -1;
 
 }
 
