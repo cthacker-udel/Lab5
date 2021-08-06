@@ -244,6 +244,7 @@ void hashMap::reHash() { // complete
 		for(int i = 0; i < ((int)nodes.size()); i++){
 
 			hashNode *theNode = nodes.at(i); // get curr node in node list
+			*(map+getIndex(theNode->keyword)) = theNode;
 
 			// call getindex with theNode's keyword instead of same logic below
 
