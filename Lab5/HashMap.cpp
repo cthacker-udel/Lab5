@@ -9,7 +9,7 @@ hashMap::hashMap(bool hash1, bool coll1) {
 
 	this->first = ""; //
 	this->numKeys = 0; //
-	this->mapSize = 10;
+	this->mapSize = 11;
 	this->map = new hashNode*[this->mapSize];
 	for(int i = 0; i < this->mapSize; i++){
 		*(this->map+i) = NULL;
@@ -24,7 +24,6 @@ void hashMap::addKeyValue(string k, string v) { // TODO : ADDKEYVALUE
 
 	// collisions will happen here not in getIndex
 	cout << "Entering addkeyvalue with key" << k << " and value " << v << endl;
-	reHash();
 	int index;
 	this->numKeys++;
 	if(this->hashfn){
@@ -43,13 +42,14 @@ void hashMap::addKeyValue(string k, string v) { // TODO : ADDKEYVALUE
 	}
 	else{
 		// collision
-		if(index == 342 && v == "North!"){
+		if(index == 20 && v == "names"){
 			cout << "breakhere" << endl;
 		}
 		cout << "Collision occured" << endl;
 		theNode = *(this->map+index);
 		while(theNode != NULL){
 			this->collisions++;
+			cout << "collision = " << this->collisions << " ind : " << index << " val : " << v << endl;
 			theNode = *(this->map+index);
 			if(theNode == NULL){
 				*(this->map+index) = new hashNode(k,v);
@@ -99,16 +99,17 @@ int hashMap::getIndex(string k) { // TODO : GETINDEX
 		index1 = calcHash2(k);
 	}
 	if(*(this->map+index1) != NULL){
-		this->collisions++;
 		hashNode *theNode = *(this->map+index1);
 		if(theNode->keyword == k){
 			return index1;
 		}
 		else if(this->collfn){
+			this->hashcoll++;
 			index1 = coll1(index1,index1,k);
 			return index1;
 		}
 		else{
+			this->hashcoll++;
 			index1 = coll2(index1,index1,k);
 			return index1;
 		}
@@ -131,14 +132,17 @@ int hashMap::getIndex(string k) { // TODO : GETINDEX
 
 int hashMap::calcHash2(string k){ // complete
 
-	int p = 80;
-	int total = 0;
+	int p = 83;
+	long total = 0;
 	while(k.length() != 0){
-		total += ((int)sqrt((((int)k.at(k.length()-1))*p)));
+		total = (p * total) + k[k.length()-1];
 		k = k.substr(0,k.length()-1);
 	}
 	while(total > this->mapSize){
-		total -= this->mapSize;
+		total -= this->collisions*7;
+	}
+	if(total < 0){
+		total = abs(total);
 	}
 	return total % this->mapSize;
 
@@ -332,12 +336,13 @@ int hashMap::coll1(int h, int i, string k) {
 		}
 	}
 	*/
-	hashNode *theNode = *(this->map+i);
+	hashNode *theNode = *(this->map+h);
 	if(theNode != NULL && theNode->keyword == k){
 		return i;
 	}
 
-	return (h + i *calcHash2(k)) % this->mapSize;
+	int res = calcHash2(k);
+	return (h + i *res) % this->mapSize;
 	// double hashing
 
 }
@@ -345,8 +350,9 @@ int hashMap::coll2(int h, int i, string k) { // TODO : COLL2 , should be correct
 	// TODO : TEST LINEAR PROBING
 	// linear probing
 	// h and i aren't used in this collision.
-	hashNode *theNode = *(this->map+i);
+	hashNode *theNode = *(this->map+h);
 	if(theNode->keyword == k){
+		this->collisions = 0;
 		return i;
 	}
 	if(i == this->mapSize-1){ // reach the end of the map
@@ -356,14 +362,16 @@ int hashMap::coll2(int h, int i, string k) { // TODO : COLL2 , should be correct
 			return coll2(h,0,k);
 		}
 		else{
+			this->collisions = 0;
 			return i;
 		}
 	}
 	else if(*(this->map+i) != NULL){ // index is already taken
 		this->collisions++;
-		return coll2(h,i+1,k); // re-call the function with index+1
+		return coll2(h,this->collisions,k); // re-call the function with index+1
 	}
 	else{
+		this->collisions = 0;
 		return i;
 	}
 	//return k % this->mapSize;
@@ -372,6 +380,19 @@ int hashMap::coll2(int h, int i, string k) { // TODO : COLL2 , should be correct
 int hashMap::findKey(string k) { // TODO : FINDKEY
 
 	int theIndex = getIndex(k);
+
+	if(*(map+theIndex) != NULL){
+		hashNode *theNode = *(map+theIndex);
+		if(theNode->keyword == k){
+			return theIndex;
+		}
+		else{
+			return -1;
+		}
+	}
+	else{
+		return -1;
+	}
 
 	/*
 	 *
@@ -384,7 +405,7 @@ int hashMap::findKey(string k) { // TODO : FINDKEY
 	 *
 	 */
 
-	return theIndex;
+	//return theIndex;
 	// call getindex
 	// given a key and find it in the map
 //NOTE: THIS METHOD CANNOT LOOP from index 0 to end of hash array looking for the key.  That destroys any efficiency in run-time. 
@@ -407,6 +428,7 @@ void hashMap::printMap() {
 			cout << endl;
 		}
 	}
+	cout << "Reached end of printmap" << endl;
 }
 
 

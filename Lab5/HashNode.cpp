@@ -56,6 +56,9 @@ void hashNode::dblArray() {
 
 string hashNode::getRandValue() {
 
+	if(this == NULL){
+		return "";
+	}
 	int randValue = rand() % this->currSize;
 
 	return *(this->values+randValue);

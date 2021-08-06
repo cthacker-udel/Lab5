@@ -1,0 +1,3 @@
+Collisions using hash 1: 0.300528, and collision handling 2: 0
+
+Congratulations! Today is stop 
