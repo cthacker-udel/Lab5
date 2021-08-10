@@ -20,6 +20,7 @@ hashMap::hashMap(bool hash1, bool coll1) {
 	this->hashcoll = 0; //
 
 }
+
 void hashMap::addKeyValue(string k, string v) { // TODO : ADDKEYVALUE
 
 
@@ -90,9 +91,8 @@ void hashMap::addKeyValue(string k, string v) { // TODO : ADDKEYVALUE
 		this->collisions = 0;
 	}
 
-
-
 }
+
 int hashMap::getIndex(string k) { // TODO : GETINDEX
 	//reHash();
 	// uses calchash and returns the index of the keyword k, use calchash, and then see if the key where the
@@ -159,9 +159,8 @@ int hashMap::calcHash2(string k){ // complete
 
 }
 
+// TODO : Rework calchash1
 int hashMap::calcHash1(string k){ // complete
-
-	// Horner's rule, describe why it would work well, sentence or two
 
 	int p = 7;
 	int total = 0;
