@@ -23,15 +23,6 @@ hashMap::hashMap(bool hash1, bool coll1) {
 
 void hashMap::addKeyValue(string k, string v) { // TODO : ADDKEYVALUE
 
-
-	/*
-	 *
-	 *
-	 *
-	 *
-	 */
-
-
 	// collisions will happen here not in getIndex
 	cout << "Entering addkeyvalue with key" << k << " and value " << v << endl;
 	int index;
@@ -115,12 +106,12 @@ int hashMap::getIndex(string k) { // TODO : GETINDEX
 		}
 		else if(this->collfn){
 			this->hashcoll++;
-			index1 = coll1(index1,index1,k);
+			index1 = coll1(index1,index1,k); // pass in hashcoll in the second
 			return index1;
 		}
 		else{
 			this->hashcoll++;
-			index1 = coll2(index1,index1,k);
+			index1 = coll2(index1,index1,k); // pass in hashcoll in the second
 			return index1;
 		}
 		// collision <--- call coll1, see if that returns a value that works, if it doesnt, then call coll2
@@ -149,7 +140,6 @@ int hashMap::calcHash2(string k){ // complete
 		total = (p * total) + k[k.length()-1];
 		k = k.substr(0,k.length()-1);
 	}
-
 
 	while(total > this->mapSize){
 		total -= this->collisions*(this->collisions+1);
