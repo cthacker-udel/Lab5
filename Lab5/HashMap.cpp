@@ -140,6 +140,7 @@ int hashMap::getIndex(string k) { // TODO : GETINDEX
 	return -1;
 }
 
+// TODO : Rework calchash2
 int hashMap::calcHash2(string k){ // complete
 
 	int p = 11;
@@ -148,6 +149,7 @@ int hashMap::calcHash2(string k){ // complete
 		total = (p * total) + k[k.length()-1];
 		k = k.substr(0,k.length()-1);
 	}
+
 
 	while(total > this->mapSize){
 		total -= this->collisions*(this->collisions+1);
@@ -159,7 +161,6 @@ int hashMap::calcHash2(string k){ // complete
 
 }
 
-// TODO : Rework calchash1
 int hashMap::calcHash1(string k){ // complete
 
 	int p = 7;
