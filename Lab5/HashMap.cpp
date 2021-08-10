@@ -9,7 +9,7 @@ hashMap::hashMap(bool hash1, bool coll1) {
 
 	this->first = ""; //
 	this->numKeys = 0; //
-	this->mapSize = 11;
+	this->mapSize = 37;
 	this->map = new hashNode*[this->mapSize];
 	for(int i = 0; i < this->mapSize; i++){
 		*(this->map+i) = NULL;
@@ -21,6 +21,15 @@ hashMap::hashMap(bool hash1, bool coll1) {
 
 }
 void hashMap::addKeyValue(string k, string v) { // TODO : ADDKEYVALUE
+
+
+	/*
+	 *
+	 *
+	 *
+	 *
+	 */
+
 
 	// collisions will happen here not in getIndex
 	cout << "Entering addkeyvalue with key" << k << " and value " << v << endl;
@@ -42,7 +51,7 @@ void hashMap::addKeyValue(string k, string v) { // TODO : ADDKEYVALUE
 	}
 	else{
 		// collision
-		if(index == 20 && v == "names"){
+		if(index == 20 && v == "names"){ // debug purposes only
 			cout << "breakhere" << endl;
 		}
 		cout << "Collision occured" << endl;
@@ -53,6 +62,7 @@ void hashMap::addKeyValue(string k, string v) { // TODO : ADDKEYVALUE
 			theNode = *(this->map+index);
 			if(theNode == NULL){
 				*(this->map+index) = new hashNode(k,v);
+				break;
 			}
 			else if(theNode->keyword == k){
 				// found node
@@ -132,17 +142,18 @@ int hashMap::getIndex(string k) { // TODO : GETINDEX
 
 int hashMap::calcHash2(string k){ // complete
 
-	int p = 83;
-	long total = 0;
+	int p = 11;
+	unsigned long total = 0;
 	while(k.length() != 0){
 		total = (p * total) + k[k.length()-1];
 		k = k.substr(0,k.length()-1);
 	}
+
 	while(total > this->mapSize){
-		total -= this->collisions*7;
+		total -= this->collisions*(this->collisions+1);
 	}
 	if(total < 0){
-		total = abs(total);
+		total = total * -1;
 	}
 	return total % this->mapSize;
 
