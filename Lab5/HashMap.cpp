@@ -27,10 +27,10 @@ hashMap::hashMap(bool hash1, bool coll1) {
 void hashMap::addKeyValue(string k, string v) { // TODO : ADDKEYVALUE
 
 	// collisions will happen here not in getIndex
-	if(v == ""){
+	if(v == "Though" && k == "much."){
 		//cout << "found blank value" << endl;
 		//sleep(5);
-		return;
+		cout << "here" << endl;
 	}
 	cout << "Entering addkeyvalue with key\n" << k << " and value " << v << endl;
 	int index = getIndex(k);
@@ -63,7 +63,7 @@ int hashMap::getIndex(string k) { // TODO : GETINDEX
 
 	// it might happen(the if statements) because if the process of how we got to place the key
 	// is through collision functions then we have to repeat the process to find it
-	int index1;
+	unsigned long index1;
 	cout << "entering getindex" << endl;
 
 
@@ -90,8 +90,8 @@ int hashMap::getIndex(string k) { // TODO : GETINDEX
 		}
 		else{
 			this->collisions++;
-			index1 = coll2(index1,index1,k); // pass in hashcoll in the second
-			return index1;
+			index1 = coll2(index1,iter++,k); // pass in hashcoll in the second
+			//return index1;
 		}
 	}
 	return index1;
@@ -101,8 +101,8 @@ int hashMap::getIndex(string k) { // TODO : GETINDEX
 // TODO : Rework calchash2
 int hashMap::calcHash2(string k){ // complete
 
-	int p = 11;
-	unsigned long total = 0;
+	int p = 7;
+	int total = 0;
 	for(int i = k.length()-1; i >= 0; i--){
 		total = (p * total) + ((int)k.at(i));
 	}
@@ -119,6 +119,9 @@ int hashMap::calcHash1(string k){ // complete
 	int total = 0;
 	for(int i = 0; i < ((int)k.length()); i++){
 		total = p+total + k.at(i);
+	}
+	if(total < 0){
+		total = total * -1;
 	}
 	return total % this->mapSize;
 
@@ -228,7 +231,11 @@ int hashMap::coll1(int h, int i, string k) {
 	}
 
 	int res = calcHash2(k);
-	return (h + i *res) % this->mapSize;
+	unsigned long result = (h + i *res) % this->mapSize;
+	if(result < 0){
+		result = result * -1;
+	}
+	return result;
 	// double hashing
 
 }
@@ -236,27 +243,11 @@ int hashMap::coll2(int h, int i, string k) { // TODO : COLL2 , should be correct
 	// TODO : TEST LINEAR PROBING
 	// linear probing
 	// h and i aren't used in this collision.
-	hashNode *theNode = *(this->map+h);
-	if(theNode->keyword == k){
-		return i;
+	unsigned long result = (h+(i*i)) % this->mapSize;
+	if(result < 0){
+		result = result * -1;
 	}
-	if(i == this->mapSize-1){ // reach the end of the map
-		if(*(this->map+this->mapSize-1) != NULL){ // checks the last node of the map
-			// last node of the map is taken
-
-			return coll2(h,0,k);
-		}
-		else{
-			return i;
-		}
-	}
-	else if(*(this->map+i) != NULL){ // index is already taken
-		return coll2(h,i+1,k); // re-call the function with index+1
-	}
-	else{
-		return i;
-	}
-	//return k % this->mapSize;
+	return result;
 
 }
 int hashMap::findKey(string k) { // TODO : FINDKEY
