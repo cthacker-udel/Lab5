@@ -3,13 +3,16 @@
 #include <iostream>
 #include <math.h>
 #include <vector>
+// includes added
+#include <unistd.h>
+
 using namespace std;
 
 hashMap::hashMap(bool hash1, bool coll1) {
 
 	this->first = ""; //
 	this->numKeys = 0; //
-	this->mapSize = 37;
+	this->mapSize = 371;
 	this->map = new hashNode*[this->mapSize];
 	for(int i = 0; i < this->mapSize; i++){
 		*(this->map+i) = NULL;
@@ -24,63 +27,31 @@ hashMap::hashMap(bool hash1, bool coll1) {
 void hashMap::addKeyValue(string k, string v) { // TODO : ADDKEYVALUE
 
 	// collisions will happen here not in getIndex
-	cout << "Entering addkeyvalue with key" << k << " and value " << v << endl;
-	int index;
-	this->numKeys++;
-	if(this->hashfn){
-		// use hashfunction1
-		index = calcHash1(k);
+	if(v == ""){
+		//cout << "found blank value" << endl;
+		//sleep(5);
+		return;
 	}
-	else{
-		// use hashfunction2
-		index = calcHash2(k);
-	}
+	cout << "Entering addkeyvalue with key\n" << k << " and value " << v << endl;
+	int index = getIndex(k);
+	//this->numKeys++;
 	cout << "index generated was : " << index << endl;
-	hashNode *theNode = *(this->map+index);
-	if(theNode == NULL){
-		// place node here
-		*(this->map+index) = new hashNode(k,v);
+	if(*(this->map+index) != NULL){
+		hashNode *theNode = *(this->map+index);
+		if(theNode->keyword == k){
+			theNode->addValue(v);
+		}
+		else{
+			cout << "failed to implement" << endl;
+			sleep(5);
+		}
 	}
 	else{
-		// collision
-		if(index == 20 && v == "names"){ // debug purposes only
-			cout << "breakhere" << endl;
-		}
-		cout << "Collision occured" << endl;
-		theNode = *(this->map+index);
-		while(theNode != NULL){
-			this->collisions++;
-			cout << "collision = " << this->collisions << " ind : " << index << " val : " << v << endl;
-			theNode = *(this->map+index);
-			if(theNode == NULL){
-				*(this->map+index) = new hashNode(k,v);
-				break;
-			}
-			else if(theNode->keyword == k){
-				// found node
-				theNode = *(this->map+index);
-				theNode->addValue(v);
-				break;
-			}
-			else if(theNode->keyword == ""){
-				*(this->map+index) = new hashNode(k,v);
-				break;
-			}
-			else{
-				// did not find node
-				if(this->collfn){
-					// coll1
-					index = coll1(index,this->collisions,k);
-				}
-				else{
-					// coll2
-					index = coll2(index,this->collisions,k);
-				}
-			}
-		}
-		reHash(); // check if the size is at the threshold
-		this->collisions = 0;
+		*(this->map+index) = new hashNode(k,v);
+		this->numKeys++;
 	}
+	reHash(); // check if the size is at the threshold
+
 
 }
 
@@ -93,42 +64,38 @@ int hashMap::getIndex(string k) { // TODO : GETINDEX
 	// it might happen(the if statements) because if the process of how we got to place the key
 	// is through collision functions then we have to repeat the process to find it
 	int index1;
+	cout << "entering getindex" << endl;
+
+
+	int iter = 0;
 	if(this->hashfn){
 		index1 = calcHash1(k);
 	}
 	else{
 		index1 = calcHash2(k);
 	}
-	if(*(this->map+index1) != NULL){
+	if(this->map[index1] != NULL && this->map[index1]->keyword != k){
+		this->hashcoll++;
+	}
+
+	while(*(this->map+index1) != NULL){
 		hashNode *theNode = *(this->map+index1);
 		if(theNode->keyword == k){
 			return index1;
 		}
 		else if(this->collfn){
-			this->hashcoll++;
-			index1 = coll1(index1,index1,k); // pass in hashcoll in the second
-			return index1;
+			this->collisions++;
+			index1 = coll1(index1,iter++,k); // pass in hashcoll in the second
+			//return index1;
 		}
 		else{
-			this->hashcoll++;
+			this->collisions++;
 			index1 = coll2(index1,index1,k); // pass in hashcoll in the second
 			return index1;
 		}
-		// collision <--- call coll1, see if that returns a value that works, if it doesnt, then call coll2
-		/*
-		int index2 = calcHash2(k);
-		if(*(*(this->map+index2)) != NULL){ <-- replace this with return of coll1 != NULL
-			// collision2
-		}
-		else{
-			// place node at index
-		}
-		*/
 	}
-	else{
-		return index1;
-	}
-	return -1;
+	return index1;
+	//return -1;
 }
 
 // TODO : Rework calchash2
@@ -136,13 +103,8 @@ int hashMap::calcHash2(string k){ // complete
 
 	int p = 11;
 	unsigned long total = 0;
-	while(k.length() != 0){
-		total = (p * total) + k[k.length()-1];
-		k = k.substr(0,k.length()-1);
-	}
-
-	while(total > this->mapSize){
-		total -= this->collisions*(this->collisions+1);
+	for(int i = k.length()-1; i >= 0; i--){
+		total = (p * total) + ((int)k.at(i));
 	}
 	if(total < 0){
 		total = total * -1;
@@ -228,10 +190,8 @@ void hashMap::reHash() { // complete
 		for(int i = 0; i < tmpMapSize; i++){
 			hashNode *theNode = *(this->map+i);
 			if(theNode != NULL){
-				if(theNode->keyword != ""){
 					// value there
 					nodes.push_back(theNode);
-				}
 			}
 		}
 
@@ -251,58 +211,6 @@ void hashMap::reHash() { // complete
 			hashNode *theNode = nodes.at(i); // get curr node in node list
 			*(map+getIndex(theNode->keyword)) = theNode;
 
-			// call getindex with theNode's keyword instead of same logic below
-
-
-			/*int index1;
-			if(this->hashfn){
-				// hash1
-				index1 = calcHash1(theNode->keyword);
-			}
-			else{
-				index1 = calcHash2(theNode->keyword);
-			}
-
-			if(*(this->map+index1) != NULL){ // collision
-				this->collisions++;
-				if(this->collfn){ // use coll1
-					int tmpResult = index1;
-					tmpResult = coll1(index1,tmpResult,theNode->keyword);
-					// 0,1 -> 0,2 -> 0,3 -> 0,4 -> 0,0
-					// control, orig index, cycle up, and result
-					// 3 variables, orig index, cycling index, and result
-					int tmpIndex = index1;
-					while(*(this->map+tmpResult) != NULL){
-						tmpResult = ++tmpIndex;
-						if(tmpIndex == this->mapSize){
-							tmpIndex = 0;
-							tmpResult = tmpIndex;
-						}
-						this->collisions++;
-						tmpResult = coll1(index1,tmpResult,theNode->keyword);
-					}
-					*(this->map+tmpResult) = theNode;
-				}
-				else{
-					// use coll2
-					int tmpResult = coll2(index1,index1,theNode->keyword);
-					int tmpIndex = index1;
-					while(*(this->map+tmpResult) != NULL){
-						if(tmpIndex == this->mapSize){
-							tmpIndex = 0;
-							tmpResult = tmpIndex;
-						}
-						// coll
-						this->collisions++;
-						tmpResult = coll2(index1,++tmpIndex,theNode->keyword);
-					}
-					*(this->map+tmpResult) = theNode;
-				}
-			}
-			else{
-				*(this->map+index1) = theNode;
-			}*/
-
 		}
 		cout << "\n\n---- AFTER REHASHING ----\n\n" << endl;
 		//printMap();
@@ -314,29 +222,6 @@ int hashMap::coll1(int h, int i, string k) {
 	// TODO : TEST DOUBLE HASHING
 	// might require same methodology of coll2, in the sense that we keep calling it until it finds a valid index
 
-	//int j = h + i *calcHash2(k);
-	/*
-	i = j;
-	if(i == this->mapSize-1){
-
-		if(*(this->map+this->mapSize-1) != NULL){
-			this->collisions++;
-			return coll1(h,0,k);
-		}
-		else{
-			return i;
-		}
-	}
-	else{
-		if((this->map+i) != NULL){
-			this->collisions++;
-			return coll1(h,i+1,k);
-		}
-		else{
-			return i;
-		}
-	}
-	*/
 	hashNode *theNode = *(this->map+h);
 	if(theNode != NULL && theNode->keyword == k){
 		return i;
@@ -353,26 +238,22 @@ int hashMap::coll2(int h, int i, string k) { // TODO : COLL2 , should be correct
 	// h and i aren't used in this collision.
 	hashNode *theNode = *(this->map+h);
 	if(theNode->keyword == k){
-		this->collisions = 0;
 		return i;
 	}
 	if(i == this->mapSize-1){ // reach the end of the map
 		if(*(this->map+this->mapSize-1) != NULL){ // checks the last node of the map
 			// last node of the map is taken
-			this->collisions++;
+
 			return coll2(h,0,k);
 		}
 		else{
-			this->collisions = 0;
 			return i;
 		}
 	}
 	else if(*(this->map+i) != NULL){ // index is already taken
-		this->collisions++;
-		return coll2(h,this->collisions,k); // re-call the function with index+1
+		return coll2(h,i+1,k); // re-call the function with index+1
 	}
 	else{
-		this->collisions = 0;
 		return i;
 	}
 	//return k % this->mapSize;

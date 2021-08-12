@@ -1,0 +1,2 @@
+Collisions using hash 1: 2.21393, and collision handling 2: 2.21393
+

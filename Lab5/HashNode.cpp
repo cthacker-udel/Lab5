@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <time.h>
+#include <vector>
 using namespace std;
 
 
@@ -59,9 +60,22 @@ string hashNode::getRandValue() {
 	if(this == NULL){
 		return "";
 	}
-	int randValue = rand() % this->currSize;
 
-	return *(this->values+randValue);
+	vector<string> words;
+
+	for(int i = 0; i < this->currSize; i++){
+		if(*(values+i) == ""){
+			continue;
+		}
+		else{
+			words.push_back(*(values+i));
+		}
+	}
+
+
+	int randValue = rand() % words.size();
+
+	return words.at(randValue);
 
 	//Every key has a values array - an array of words that 
 	// follow that key in the text document.  You're going to 

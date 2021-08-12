@@ -60,6 +60,7 @@ void makeSeuss::writeFile() {
 	string value = ht->map[ht->getIndex(ht->first)]->getRandValue();
 	int ct = 0;
 	int len = 0;
+	int ind;
 	while (ct < 500 &&  value != "") {
 		key = value;
 		outfile << key << " ";
@@ -68,6 +69,9 @@ void makeSeuss::writeFile() {
 			len = 0;
 		}
 		else len++;
+		// added below
+		ind = ht->getIndex(key);
+		// added ^^
 		value = ht->map[ht->getIndex(key)]->getRandValue();
 		ct ++;
 	}
