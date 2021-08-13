@@ -27,15 +27,13 @@ hashMap::hashMap(bool hash1, bool coll1) {
 void hashMap::addKeyValue(string k, string v) { // TODO : ADDKEYVALUE
 
 	// collisions will happen here not in getIndex
-	if(v == "Though" && k == "much."){
-		//cout << "found blank value" << endl;
-		//sleep(5);
-		cout << "here" << endl;
+	if(v == ""){
+		return;
 	}
-	cout << "Entering addkeyvalue with key\n" << k << " and value " << v << endl;
+	//cout << "Entering addkeyvalue with key\n" << k << " and value " << v << endl;
 	int index = getIndex(k);
 	//this->numKeys++;
-	cout << "index generated was : " << index << endl;
+	//cout << "index generated was : " << index << endl;
 	if(*(this->map+index) != NULL){
 		hashNode *theNode = *(this->map+index);
 		if(theNode->keyword == k){
@@ -64,7 +62,7 @@ int hashMap::getIndex(string k) { // TODO : GETINDEX
 	// it might happen(the if statements) because if the process of how we got to place the key
 	// is through collision functions then we have to repeat the process to find it
 	unsigned long index1;
-	cout << "entering getindex" << endl;
+	//cout << "entering getindex" << endl;
 
 
 	int iter = 0;
@@ -176,19 +174,19 @@ void hashMap::reHash() { // complete
 	 * 2) Rehash all the nodes, basically place them back in new spots
 	 *
 	 */
-	cout << "ratio = " << (this->numKeys*1.0 / this->mapSize) << endl;
+	//cout << "ratio = " << (this->numKeys*1.0 / this->mapSize) << endl;
 	if(this->numKeys*1.0 / this->mapSize >= .70){
 
-		cout << "size of map is " << this->numKeys << endl;
+		//cout << "size of map is " << this->numKeys << endl;
 		// double array size and rehash
-		cout << "entered rehash function" << endl;
+		//cout << "entered rehash function" << endl;
 
 		int tmpMapSize = this->mapSize;
 
 		getClosestPrime(); // <---- double map size
 		// TODO : rehash all keys, use addkeyvalue
 
-		cout << "before for loop" << endl;
+		//cout << "before for loop" << endl;
 
 		for(int i = 0; i < tmpMapSize; i++){
 			hashNode *theNode = *(this->map+i);
@@ -205,7 +203,7 @@ void hashMap::reHash() { // complete
 			*(this->map+i) = NULL;
 		}
 
-		cout << "after for loop" << endl;
+		//cout << "after for loop" << endl;
 
 		// adding in all the nodes
 
@@ -215,7 +213,7 @@ void hashMap::reHash() { // complete
 			*(map+getIndex(theNode->keyword)) = theNode;
 
 		}
-		cout << "\n\n---- AFTER REHASHING ----\n\n" << endl;
+		//cout << "\n\n---- AFTER REHASHING ----\n\n" << endl;
 		//printMap();
 
 	}
